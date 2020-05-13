@@ -118,45 +118,38 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"index.js":[function(require,module,exports) {
-var windowHeight = window.innerHeight;
-var windowWidth = window.innerWidth; //创建渲染器，宽高为视窗的宽高
+//舞台
+var app = new PIXI.Application({
+  width: 500,
+  height: 900
+});
+document.body.appendChild(app.view); // 背景
+// var back=new PIXI.Sprite.fromImage('../img/bg.jpg');
+// app.stage.addChild(back);
+// 飞机1
 
-var pixiRender = new PIXI.autoDetectRenderer(windowWidth, windowHeight); //把渲染器添加到HTML结构里
-
-$(".game_con_wrap")[0].appendChild(pixiRender.view); //创建一个容器对象：舞台
-
-var objPixiContainer = new PIXI.Container(); //告诉渲染器去渲染舞台
-
-pixiRender.render(objPixiContainer); //图片预加载
-
-PIXI.Loader.shared.add("https://g.mdcdn.cn/h5/img/act/201711/new-1-1.jpg").add("https://g.mdcdn.cn/h5/img/act/201711/new-1-2.png").on("progress", function () {//do sth when loading
-}).load(loadingFinish); //加载完成回调
-
-function loadingFinish() {
-  //创建一个精灵
-  var sprite = new PIXI.Sprite(PIXI.loader.resources["https://g.mdcdn.cn/h5/img/act/201711/new-1-1.jpg"].texture);
-  sprite.x = 150;
-  sprite.y = 0;
-  sprite.width = 100;
-  sprite.height = 100; //添加到舞台
-
-  objPixiContainer.addChild(sprite); //渲染到渲染器
-
-  pixiRender.render(objPixiContainer);
-}
+var plane = new PIXI.Sprite.fromImage('https://g.mdcdn.cn/h5/img/act/201711/new-1-1.jpg');
+app.stage.addChild(plane);
+plane.width = 60;
+plane.height = 60;
+plane.y = 800;
+plane.x = 100;
+plane.anchor.set(0.5, 0.5); //一、自定义帧频函数(有什么意义取决于他用于什么地方)
 
 function sky() {
-  console.log('sky'); //二、每一帧要完成的动作
+  //二、每一帧要完成的动作
   //当Y轴的坐标大于-50时执行，飞机向前移动
-  // if(plane.y>-50){
-  //     sprite.y += 1;
-  // }else{
-  //     超出则回到坐标为400的位置
-  //     plane.y=400;
-  // }
-}
+  if (plane.y > -50) {
+    plane.y -= 1;
+  } else {
+    //超出则回到坐标为400的位置
+    plane.y = 800;
+  }
+} // 自动调用sky，每秒调用自己电脑Hz的峰值
+//三、app.ticker.add():添加帧频函数
 
-objPixiContainer.ticker.add(sky);
+
+app.ticker.add(sky);
 },{}],"../../../.config/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
